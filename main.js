@@ -42,6 +42,8 @@ var element                 = $('#sidebarInner');
     fixed                   = 0,
     overflow                = $(this).height() - element.height();
 
+//TODO : When height smaller than window, don't stick to bottom
+
 $(window).scroll(function(){
   var currentScroll         = $(this).scrollTop(),
       currentScrollBottom   = currentScroll + $(this).height(),
@@ -50,30 +52,38 @@ $(window).scroll(function(){
       scrollDirection       = scrollDifference?scrollDifference<0?-1:1:0,
       topBorderGap          = element.offset().top - currentScroll,
       bottomBorderGap       = currentScrollBottom - elementBottom;
-
+  // console.log(topBorderGap,bottomBorderGap);
+  
   if(currentScroll > threshold - topOffset) {
-    if(previousScrollDirection != scrollDirection && fixed==1) {
-      directionChange(scrollDirection,currentScroll - topBorderGap);
+    if(previousScrollDirection != scrollDirection && fixed==1 && overflow<0) {
+      directionChange(scrollDirection,currentScroll - topBorderGap,bottomBorderGap);
     }
-    else if (topBorderGap > topOffset && scrollDirection == -1) {
+    else if ((fixed ==0 && topBorderGap > topOffset && scrollDirection == -1) ||
+             (overflow > 0)) {
       element.css('top',topOffset).css('position','fixed');
       fixed=1;
+  // console.log('b');
     }
-    else if(bottomBorderGap > bottomOffset && scrollDirection == 1) {
-      element.css('top',overflow-bottomOffset).css('position','fixed');
+    else if(fixed ==0 && bottomBorderGap > bottomOffset && scrollDirection == 1) {
+      element.css('top',overflow-bottomOffset).css('position','fixed');  
       fixed=1;
+  // console.log('c');
     }
+
+  // console.log('d');
   }
   else {
     element.css('top',0).css('position','relative');
     fixed=0;
+  // console.log('e');
   }
 
   previousScroll = currentScroll;
   previousScrollDirection = scrollDirection;
 });
 
-function directionChange (newDirection,offset) {
+function directionChange (newDirection,offset,gap) {
+  console.log(gap);
   if(newDirection==1) {
     element.css('position','relative').css('top',offset-threshold);
   }
