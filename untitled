@@ -50,17 +50,17 @@ $(window).scroll(function(){
       scrollDirection       = scrollDifference?scrollDifference<0?-1:1:0,
       topBorderGap          = element.offset().top - currentScroll,
       bottomBorderGap       = currentScrollBottom - elementBottom;
+
   if(currentScroll > threshold - topOffset) {
-    if(previousScrollDirection != scrollDirection && fixed==1 && overflow<0) {
-      directionChange(scrollDirection,currentScroll - topBorderGap,bottomBorderGap);
+    if(previousScrollDirection != scrollDirection && fixed==1) {
+      directionChange(scrollDirection,currentScroll - topBorderGap);
     }
-    else if ((fixed ==0 && topBorderGap > topOffset && scrollDirection == -1) ||
-             (overflow > 0)) {
+    else if (topBorderGap > topOffset && scrollDirection == -1) {
       element.css('top',topOffset).css('position','fixed');
       fixed=1;
     }
-    else if(fixed ==0 && bottomBorderGap > bottomOffset && scrollDirection == 1) {
-      element.css('top',overflow-bottomOffset).css('position','fixed');  
+    else if(bottomBorderGap > bottomOffset && scrollDirection == 1) {
+      element.css('top',overflow-bottomOffset).css('position','fixed');
       fixed=1;
     }
   }
@@ -73,8 +73,7 @@ $(window).scroll(function(){
   previousScrollDirection = scrollDirection;
 });
 
-function directionChange (newDirection,offset,gap) {
-  console.log(gap);
+function directionChange (newDirection,offset) {
   if(newDirection==1) {
     element.css('position','relative').css('top',offset-threshold);
   }
